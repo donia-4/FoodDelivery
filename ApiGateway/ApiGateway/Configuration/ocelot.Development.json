@@ -1,0 +1,84 @@
+{
+    "Routes": [
+        {
+            "UpstreamPathTemplate": "/api/restaurants/{everything}",
+            "DownstreamPathTemplate": "/api/restaurants/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7126
+                }
+            ]
+        },
+        {
+            "UpstreamPathTemplate": "/api/foods/{everything}",
+            "DownstreamPathTemplate": "/api/foods/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7126
+                }
+            ]
+        },
+        {
+            "UpstreamPathTemplate": "/api/categories/{everything}",
+            "DownstreamPathTemplate": "/api/categories/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7126
+                }
+            ]
+        },
+        {
+            "UpstreamPathTemplate": "/api/reviews/{everything}",
+            "DownstreamPathTemplate": "/api/reviews/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7126
+                }
+            ]
+        },
+        {
+            "UpstreamPathTemplate": "/api/addons/{everything}",
+            "DownstreamPathTemplate": "/api/addons/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7126
+                }
+            ]
+        },
+        {
+            "UpstreamPathTemplate": "/api/branches/{everything}",
+            "DownstreamPathTemplate": "/api/branches/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7126
+                }
+            ]
+        },
+        {
+            "UpstreamPathTemplate": "/api/delivery-zones/{everything}",
+            "DownstreamPathTemplate": "/api/delivery-zones/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7126
+                }
+            ]
+        }
+    ],
+    "GlobalConfiguration": {
+        "BaseUrl": "https://localhost:7288"
+    }
+}
