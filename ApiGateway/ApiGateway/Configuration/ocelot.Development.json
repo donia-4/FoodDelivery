@@ -2,6 +2,7 @@
     "Routes": [
         {
             "UpstreamPathTemplate": "/api/restaurants/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "PATCH", "DELETE" ],
             "DownstreamPathTemplate": "/api/restaurants/{everything}",
             "DownstreamScheme": "https",
             "DownstreamHostAndPorts": [
@@ -9,10 +10,12 @@
                     "Host": "localhost",
                     "Port": 7126
                 }
-            ]
+            ],
+            "SwaggerKey": "restaurant"
         },
         {
             "UpstreamPathTemplate": "/api/foods/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "PATCH", "DELETE" ],
             "DownstreamPathTemplate": "/api/foods/{everything}",
             "DownstreamScheme": "https",
             "DownstreamHostAndPorts": [
@@ -20,10 +23,12 @@
                     "Host": "localhost",
                     "Port": 7126
                 }
-            ]
+            ],
+            "SwaggerKey": "restaurant"
         },
         {
             "UpstreamPathTemplate": "/api/categories/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "PATCH", "DELETE" ],
             "DownstreamPathTemplate": "/api/categories/{everything}",
             "DownstreamScheme": "https",
             "DownstreamHostAndPorts": [
@@ -31,10 +36,12 @@
                     "Host": "localhost",
                     "Port": 7126
                 }
-            ]
+            ],
+            "SwaggerKey": "restaurant"
         },
         {
             "UpstreamPathTemplate": "/api/reviews/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "PATCH", "DELETE" ],
             "DownstreamPathTemplate": "/api/reviews/{everything}",
             "DownstreamScheme": "https",
             "DownstreamHostAndPorts": [
@@ -42,10 +49,12 @@
                     "Host": "localhost",
                     "Port": 7126
                 }
-            ]
+            ],
+            "SwaggerKey": "restaurant"
         },
         {
             "UpstreamPathTemplate": "/api/addons/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "PATCH", "DELETE" ],
             "DownstreamPathTemplate": "/api/addons/{everything}",
             "DownstreamScheme": "https",
             "DownstreamHostAndPorts": [
@@ -53,10 +62,12 @@
                     "Host": "localhost",
                     "Port": 7126
                 }
-            ]
+            ],
+            "SwaggerKey": "restaurant"
         },
         {
             "UpstreamPathTemplate": "/api/branches/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "PATCH", "DELETE" ],
             "DownstreamPathTemplate": "/api/branches/{everything}",
             "DownstreamScheme": "https",
             "DownstreamHostAndPorts": [
@@ -64,10 +75,12 @@
                     "Host": "localhost",
                     "Port": 7126
                 }
-            ]
+            ],
+            "SwaggerKey": "restaurant"
         },
         {
             "UpstreamPathTemplate": "/api/delivery-zones/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "PATCH", "DELETE" ],
             "DownstreamPathTemplate": "/api/delivery-zones/{everything}",
             "DownstreamScheme": "https",
             "DownstreamHostAndPorts": [
@@ -75,9 +88,76 @@
                     "Host": "localhost",
                     "Port": 7126
                 }
-            ]
+            ],
+            "SwaggerKey": "restaurant"
+        },
+
+        {
+            "UpstreamPathTemplate": "/api/auth/{everything}",
+            "UpstreamHttpMethod": [ "POST" ],
+            "DownstreamPathTemplate": "/api/auth/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "identityservices.runasp.net",
+                    "Port": 443
+                }
+            ],
+            "SwaggerKey": "identity"
+        },
+
+        {
+            "UpstreamPathTemplate": "/api/users/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "PATCH", "DELETE" ],
+            "DownstreamPathTemplate": "/api/users/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "identityservices.runasp.net",
+                    "Port": 443
+                }
+            ],
+            "SwaggerKey": "identity",
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer"
+            }
+        },
+
+        {
+            "UpstreamPathTemplate": "/api/roles/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "PATCH", "DELETE" ],
+            "DownstreamPathTemplate": "/api/roles/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "identityservices.runasp.net",
+                    "Port": 443
+                }
+            ],
+            "SwaggerKey": "identity",
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer"
+            }
+        },
+
+        {
+            "UpstreamPathTemplate": "/api/permissions/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "PATCH", "DELETE" ],
+            "DownstreamPathTemplate": "/api/permissions/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "identityservices.runasp.net",
+                    "Port": 443
+                }
+            ],
+            "SwaggerKey": "identity",
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer"
+            }
         }
     ],
+
     "GlobalConfiguration": {
         "BaseUrl": "https://localhost:7288"
     }
