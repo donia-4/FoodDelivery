@@ -86,12 +86,6 @@ public sealed class Restaurant : AuditableEntity
 
         var restaurant = new Restaurant(id,ownerId,name.Trim(),description.Trim(),phone.Trim(),email.Trim(),cuisineType,address.Trim(),logo,logoPublicId,coverImage,coverImagePublicId);
 
-        restaurant.AddDomainEvent(
-            new RestaurantRequestedEvent(
-                restaurant.Id,
-                restaurant.OwnerId,
-                restaurant.Name));
-
         return restaurant;
     }
 
@@ -146,9 +140,6 @@ public sealed class Restaurant : AuditableEntity
         Status = RestaurantStatus.Approved;
         IsApproved = true;
 
-        AddDomainEvent(
-            new RestaurantApprovedEvent(Id));
-
         return Result.Updated;
     }
 
@@ -159,11 +150,6 @@ public sealed class Restaurant : AuditableEntity
 
         Status = RestaurantStatus.Rejected;
         IsApproved = false;
-
-        AddDomainEvent(
-            new RestaurantRejectedEvent(
-                Id,
-                reason));
 
         return Result.Updated;
     }

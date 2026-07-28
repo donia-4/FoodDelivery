@@ -1,6 +1,8 @@
 ﻿using System.Threading.RateLimiting;
+using ApiGateway.Extensions;
 using ApiGateway.Middlewares;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.OpenApi.Models;
 using Ocelot.DependencyInjection;
 
 namespace ApiGateway;
@@ -12,6 +14,8 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services
+            .AddGatewayAuthentication(configuration)   
+            .AddGatewayAuthorization()
             .AddGatewayCors(configuration)
             .AddGatewayOutputCaching()
             .AddGatewayHealthChecks()
@@ -132,7 +136,7 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.AddOcelot(configuration);
-
+        services.AddSwaggerForOcelot(configuration);
         return services;
     }
 }

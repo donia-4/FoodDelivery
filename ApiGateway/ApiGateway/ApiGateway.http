@@ -2,5 +2,4 @@
 
 ###
 
-GET {{ApiGateway}}/api/restaurants/44b82191-29d1-41a6-b229-beb0e3860280/menu
-
+GET https://localhost:7288/api/restaurants?pageNumber=3&pageSize=10
