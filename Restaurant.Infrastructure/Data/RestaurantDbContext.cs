@@ -6,6 +6,7 @@ using Restaurant.Domain.Categories;
 using Restaurant.Domain.Common;
 using Restaurant.Domain.DeliveryZones;
 using Restaurant.Domain.Foods;
+using Restaurant.Domain.Outbox;
 using Restaurant.Domain.Restaurants;
 using Restaurant.Domain.Reviews;
 using Restaurant.Domain.WorkingHours;
@@ -28,6 +29,7 @@ public class RestaurantDbContext : DbContext
     public DbSet<DeliveryZone> DeliveryZones => Set<DeliveryZone>();
     public DbSet<RestaurantImage> RestaurantImages => Set<RestaurantImage>();
     public DbSet<Review> Reviews => Set<Review>();
+    public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
