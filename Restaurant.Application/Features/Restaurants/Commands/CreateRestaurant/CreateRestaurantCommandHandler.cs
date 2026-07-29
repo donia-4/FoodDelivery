@@ -16,7 +16,7 @@ namespace Restaurant.Application.Features.Restaurants.CreateRestaurant;
 public sealed class CreateRestaurantCommandHandler(
     IRestaurantRepository restaurantRepository,
     IFileService fileService,
-    IEventPublisher eventPublisher,
+    IOutbox outbox,
     ILogger<CreateRestaurantCommandHandler> logger)
     : IRequestHandler<
         CreateRestaurantCommand,
@@ -32,7 +32,8 @@ public sealed class CreateRestaurantCommandHandler(
 
         var request = command.Request;
 
-        bool duplicateName = await restaurantRepository.ExistsWithTheGivenName(request.Name.ToLower(), cancellationToken);
+        bool duplicateName = await restaurantRepository.ExistsWithTheGivenName(
+            request.Name.ToLower(), cancellationToken);
 
         if (duplicateName)
             return RestaurantErrors.DuplicateName;
@@ -79,17 +80,18 @@ public sealed class CreateRestaurantCommandHandler(
             restaurant,
             cancellationToken);
 
-        await restaurantRepository.SaveChangesAsync(
-            cancellationToken);
-
-        // Publish Integration Event after SaveChanges
-        await eventPublisher.PublishAsync(
+        // Write integration event to Outbox (same DB transaction)
+        await outbox.AddAsync(
             new RestaurantRequestedIntegrationEvent(
                 restaurant.Id,
                 restaurant.OwnerId,
                 restaurant.Name,
                 DateTime.UtcNow),
             RoutingKeys.RestaurantRequested,
+            cancellationToken);
+
+        // Atomic commit: restaurant + outbox message
+        await restaurantRepository.SaveChangesAsync(
             cancellationToken);
 
         logger.LogInformation(
