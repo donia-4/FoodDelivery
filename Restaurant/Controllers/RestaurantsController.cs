@@ -23,6 +23,7 @@ using Restaurant.Domain.Results;
 namespace Restaurant.API.Controllers;
 
 [Route("api/restaurants")]
+[Authorize]
 public sealed class RestaurantsController(ISender sender)
     : ApiController
 {
@@ -30,7 +31,6 @@ public sealed class RestaurantsController(ISender sender)
     private static readonly HashSet<string> AllowedExtensions =
         new(StringComparer.OrdinalIgnoreCase) { ".jpg", ".jpeg", ".png", ".jfif" };
 
-    [AllowAnonymous]
     [HttpPost("request")]
     public async Task<IActionResult> CreateRestaurant(
         [FromForm] CreateRestaurantApiRequest request,
@@ -79,7 +79,6 @@ public sealed class RestaurantsController(ISender sender)
             "Restaurant request submitted successfully");
     }
 
-    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetAllRestaurants(
         [FromQuery] int pageNumber = 1,
@@ -143,7 +142,6 @@ public sealed class RestaurantsController(ISender sender)
             Problem);
     }
 
-    [AllowAnonymous]
     [HttpGet("branches")]
     public async Task<IActionResult> GetRestaurantBranches(
         Guid restaurantId,
@@ -165,7 +163,6 @@ public sealed class RestaurantsController(ISender sender)
             Problem);
     }
 
-    [AllowAnonymous]
     [HttpGet("{restaurantId:guid}/menu")]
     public async Task<IActionResult> GetRestaurantMenu(
         Guid restaurantId,
@@ -187,7 +184,6 @@ public sealed class RestaurantsController(ISender sender)
             Problem);
     }
 
-    [AllowAnonymous]
     [HttpGet("{restaurantId:guid}/categories")]
     public async Task<IActionResult> GetRestaurantCategories(
         Guid restaurantId,
@@ -209,7 +205,6 @@ public sealed class RestaurantsController(ISender sender)
             Problem);
     }
 
-    [AllowAnonymous]
     [HttpPut("{restaurantId:guid}/review")]
     public async Task<IActionResult> ReviewRestaurant(
         Guid restaurantId,
@@ -227,7 +222,6 @@ public sealed class RestaurantsController(ISender sender)
             Problem);
     }
 
-    [AllowAnonymous]
     [HttpPut("{restaurantId:guid}/availability")]
     public async Task<IActionResult> ChangeRestaurantAvailability(
         Guid restaurantId,
@@ -245,7 +239,6 @@ public sealed class RestaurantsController(ISender sender)
             Problem);
     }
 
-    [AllowAnonymous]
     [HttpGet("search")]
     public async Task<IActionResult> SearchRestaurants(
         [FromQuery] string? name,

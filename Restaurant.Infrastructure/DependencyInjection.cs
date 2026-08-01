@@ -1,10 +1,13 @@
-﻿using CloudinaryDotNet;
+﻿using System.Text;
+using CloudinaryDotNet;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using RabbitMQ.Client;
 using Restaurant.Application.Common.Interfaces.Messaging;
 using Restaurant.Application.Common.Interfaces.Repositories;
@@ -29,6 +32,8 @@ public static class DependencyInjection
             .AddCaching()
             .AddCloudinary(configuration)
             .AddRabbitMq(configuration)
+            .AddJwtAuthentication(configuration)
+            .AddJwtAuthorization()
             .AddRepositories();
 
         return services;
@@ -134,6 +139,73 @@ public static class DependencyInjection
         services.AddScoped<IDeliveryZoneRepository, DeliveryZoneRepository>();
 
         services.AddScoped<IReviewRepository, ReviewRepository>();
+
+        return services;
+    }
+    private static IServiceCollection AddJwtAuthentication(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var jwtSettings = configuration
+            .GetSection(JwtSettings.SectionName)
+            .Get<JwtSettings>()
+            ?? throw new InvalidOperationException(
+                $"Configuration section '{JwtSettings.SectionName}' is missing.");
+
+        services
+            .AddOptions<JwtSettings>()
+            .Bind(configuration.GetSection(JwtSettings.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        var key = Encoding.UTF8.GetBytes(jwtSettings.Secret);
+
+        services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+
+                options.TokenValidationParameters =
+                    new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey =
+                            new SymmetricSecurityKey(key),
+
+                        ValidateIssuer = true,
+                        ValidIssuer = jwtSettings.Issuer,
+
+                        ValidateAudience = true,
+                        ValidAudience = jwtSettings.Audience,
+
+                        ValidateLifetime = true,
+
+                        ClockSkew = TimeSpan.Zero
+                    };
+            });
+
+        return services;
+    }
+
+    private static IServiceCollection AddJwtAuthorization(
+        this IServiceCollection services)
+    {
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("Authenticated",
+                policy => policy.RequireAuthenticatedUser());
+
+            options.AddPolicy("AdminOnly",
+                policy => policy.RequireRole("Admin"));
+
+            options.AddPolicy("RestaurantOwnerOnly",
+                policy => policy.RequireRole("RestaurantOwner"));
+
+            options.AddPolicy("CustomerOnly",
+                policy => policy.RequireRole("Customer"));
+        });
 
         return services;
     }
