@@ -9,6 +9,7 @@ using RabbitMQ.Client;
 using Restaurant.Application.Common.Interfaces.Messaging;
 using Restaurant.Application.Common.Interfaces.Repositories;
 using Restaurant.Application.Common.Interfaces.Services;
+using Restaurant.Infrastructure.BackgroundJobs;
 using Restaurant.Infrastructure.Data;
 using Restaurant.Infrastructure.Data.Interceptors;
 using Restaurant.Infrastructure.RabbitMQ;
@@ -103,6 +104,9 @@ public static class DependencyInjection
 
         services.AddSingleton<IEventPublisher, RabbitMqPublisher>();
         services.AddScoped<IOutbox, EfOutbox>();
+
+        // Background worker that polls the outbox table and publishes to RabbitMQ
+        services.AddHostedService<OutboxProcessor>();
 
         return services;
     }
