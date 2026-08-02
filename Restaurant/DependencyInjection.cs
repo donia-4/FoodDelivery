@@ -1,4 +1,5 @@
 ﻿using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,16 +29,43 @@ public static class DependencyInjection
     private static IServiceCollection AddApiDocumentation(
         this IServiceCollection services)
     {
-        services.AddEndpointsApiExplorer();
-
         services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "Restaurant Service API"
+                Title = "Restaurant Service API",
+                Version = "v1"
             });
-        });
 
+            var jwtSecurityScheme = new OpenApiSecurityScheme
+            {
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Description = "Enter JWT Bearer token",
+
+                Reference = new OpenApiReference
+                {
+                    Id = JwtBearerDefaults.AuthenticationScheme,
+                    Type = ReferenceType.SecurityScheme
+                }
+            };
+
+            options.AddSecurityDefinition(
+                JwtBearerDefaults.AuthenticationScheme,
+                jwtSecurityScheme);
+
+            options.AddSecurityRequirement(
+                new OpenApiSecurityRequirement
+                {
+            {
+                jwtSecurityScheme,
+                Array.Empty<string>()
+            }
+                });
+        });
         return services;
     }
 
@@ -113,7 +141,6 @@ public static class DependencyInjection
 
         return services;
     }
-
     private static IServiceCollection AddAppRateLimiting(this IServiceCollection services)
     {
         services.AddRateLimiter(options =>
@@ -133,4 +160,5 @@ public static class DependencyInjection
 
         return services;
     }
+
 }

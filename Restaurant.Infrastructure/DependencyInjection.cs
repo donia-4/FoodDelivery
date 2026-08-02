@@ -1,4 +1,5 @@
 ﻿using CloudinaryDotNet;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Caching.Hybrid;
@@ -30,6 +31,8 @@ public static class DependencyInjection
             .AddCaching()
             .AddCloudinary(configuration)
             .AddRabbitMq(configuration)
+            .AddJwtAuthentication(configuration)
+            .AddJwtAuthorization()
             .AddRepositories();
 
         return services;
@@ -138,6 +141,55 @@ public static class DependencyInjection
         services.AddScoped<IDeliveryZoneRepository, DeliveryZoneRepository>();
 
         services.AddScoped<IReviewRepository, ReviewRepository>();
+
+        return services;
+    }
+    private static IServiceCollection AddJwtAuthentication(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var identitySettings = configuration
+            .GetSection(IdentitySettings.SectionName)
+            .Get<IdentitySettings>()
+            ?? throw new InvalidOperationException(
+                $"Configuration section '{IdentitySettings.SectionName}' is missing.");
+
+        services
+            .AddOptions<IdentitySettings>()
+            .Bind(configuration.GetSection(IdentitySettings.SectionName))
+            .ValidateOnStart();
+
+        services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+
+                options.Authority = identitySettings.AuthorityUrl;
+
+                options.Audience = identitySettings.ApiResourceName;
+            });
+
+        return services;
+    }
+
+    private static IServiceCollection AddJwtAuthorization(
+        this IServiceCollection services)
+    {
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("Authenticated",
+                policy => policy.RequireAuthenticatedUser());
+
+            options.AddPolicy("AdminOnly",
+                policy => policy.RequireRole("Admin"));
+
+            options.AddPolicy("RestaurantOwnerOnly",
+                policy => policy.RequireRole("RestaurantOwner"));
+
+            options.AddPolicy("CustomerOnly",
+                policy => policy.RequireRole("Customer"));
+        });
 
         return services;
     }
