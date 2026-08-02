@@ -1,5 +1,4 @@
-﻿using System.Text;
-using CloudinaryDotNet;
+﻿using CloudinaryDotNet;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -7,7 +6,6 @@ using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using RabbitMQ.Client;
 using Restaurant.Application.Common.Interfaces.Messaging;
 using Restaurant.Application.Common.Interfaces.Repositories;
@@ -146,44 +144,26 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var jwtSettings = configuration
-            .GetSection(JwtSettings.SectionName)
-            .Get<JwtSettings>()
+        var identitySettings = configuration
+            .GetSection(IdentitySettings.SectionName)
+            .Get<IdentitySettings>()
             ?? throw new InvalidOperationException(
-                $"Configuration section '{JwtSettings.SectionName}' is missing.");
+                $"Configuration section '{IdentitySettings.SectionName}' is missing.");
 
         services
-            .AddOptions<JwtSettings>()
-            .Bind(configuration.GetSection(JwtSettings.SectionName))
-            .ValidateDataAnnotations()
+            .AddOptions<IdentitySettings>()
+            .Bind(configuration.GetSection(IdentitySettings.SectionName))
             .ValidateOnStart();
-
-        var key = Encoding.UTF8.GetBytes(jwtSettings.Secret);
 
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
                 options.RequireHttpsMetadata = false;
-                options.SaveToken = true;
 
-                options.TokenValidationParameters =
-                    new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey =
-                            new SymmetricSecurityKey(key),
+                options.Authority = identitySettings.AuthorityUrl;
 
-                        ValidateIssuer = true,
-                        ValidIssuer = jwtSettings.Issuer,
-
-                        ValidateAudience = true,
-                        ValidAudience = jwtSettings.Audience,
-
-                        ValidateLifetime = true,
-
-                        ClockSkew = TimeSpan.Zero
-                    };
+                options.Audience = identitySettings.ApiResourceName;
             });
 
         return services;
