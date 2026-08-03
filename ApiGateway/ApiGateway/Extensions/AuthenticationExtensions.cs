@@ -1,5 +1,7 @@
-﻿using ApiGateway.Settings;
+﻿using System.Text;
+using ApiGateway.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ApiGateway.Extensions;
 
@@ -9,15 +11,15 @@ public static class AuthenticationExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var identitySettings = configuration
-            .GetSection(IdentitySettings.SectionName)
-            .Get<IdentitySettings>()
+        var jwtSettings = configuration
+            .GetSection(JwtSettings.SectionName)
+            .Get<JwtSettings>()
             ?? throw new InvalidOperationException(
-                $"Configuration section '{IdentitySettings.SectionName}' is missing.");
+                $"Configuration section '{JwtSettings.SectionName}' is missing.");
 
         services
-            .AddOptions<IdentitySettings>()
-            .Bind(configuration.GetSection(IdentitySettings.SectionName))
+            .AddOptions<JwtSettings>()
+            .Bind(configuration.GetSection(JwtSettings.SectionName))
             .ValidateOnStart();
 
         services
@@ -25,10 +27,24 @@ public static class AuthenticationExtensions
             .AddJwtBearer(options =>
             {
                 options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
 
-                options.Authority = identitySettings.AuthorityUrl;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtSettings.Issuer,
 
-                options.Audience = identitySettings.ApiResourceName;
+                    ValidateAudience = true,
+                    ValidAudiences = jwtSettings.Audience,
+
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(jwtSettings.Secret)),
+
+                    ValidateLifetime = true,
+
+                    ClockSkew = TimeSpan.Zero
+                };
             });
 
         return services;
