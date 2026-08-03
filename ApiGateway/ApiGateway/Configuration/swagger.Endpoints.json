@@ -21,6 +21,17 @@
                     "Url": "https://identityservices.runasp.net/swagger/v1/swagger.json"
                 }
             ]
+        },
+        {
+            "Key": "order",
+            "TransformByOcelotConfig": true,
+            "Config": [
+                {
+                    "Name": "Order Service",
+                    "Version": "v1",
+                    "Url": "https://localhost:7235/swagger/v1/swagger.json"
+                }
+            ]
         }
     ]
 }
