@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Reflection;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Dtos;
@@ -17,6 +18,7 @@ using Restaurant.Application.Features.Restaurants.Dtos.ReviewRestaurant;
 using Restaurant.Application.Features.Restaurants.Dtos.SearchRestaurants;
 using Restaurant.Application.Features.Restaurants.Dtos.UpdateRestaurant;
 using Restaurant.Application.Features.Restaurants.Queries.GetAllRestaurants;
+using Restaurant.Application.Features.Restaurants.Queries.GetRestaurantById;
 using Restaurant.Application.Features.Restaurants.Queries.SearchRestaurants;
 using Restaurant.Domain.Results;
 
@@ -271,7 +273,16 @@ public sealed class RestaurantsController(ISender sender)
             r => OkEnvelope(r, "Restaurants searched successfully"),
             Problem);
     }
+    [HttpGet("{id:guid}")]
+    [AllowAnonymous] 
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        var result = await sender.Send(new GetRestaurantByIdQuery(id));
 
+        return result.IsSuccess
+            ? OkEnvelope(result.Value)
+            : Problem(result.Errors);
+    }
     private static bool IsValidImage(IFormFile file)
     {
         if (file.Length > MaxFileSizeBytes)
