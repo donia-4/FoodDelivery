@@ -155,6 +155,38 @@
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer"
             }
+        },
+        {
+            "UpstreamPathTemplate": "/admin/orders/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "PATCH", "DELETE" ],
+            "DownstreamPathTemplate": "/admin/orders/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7235
+                }
+            ],
+            "SwaggerKey": "order",
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer"
+            }
+        },
+        {
+            "UpstreamPathTemplate": "/restaurant/orders/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "PATCH", "DELETE" ],
+            "DownstreamPathTemplate": "/restaurant/orders/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7235
+                }
+            ],
+            "SwaggerKey": "order",
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer"
+            }
         }
     ],
 
