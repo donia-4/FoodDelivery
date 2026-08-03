@@ -13,9 +13,9 @@ using Restaurant.Application.Features.Categories.Dtos.UpdateCategory;
 namespace Restaurant.API.Controllers
 {
     [Route("api/categories")]
+    [Authorize]
     public sealed class CategoriesController(ISender sender) : ApiController
     {
-        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequest request, CancellationToken cancellationToken)
         {
@@ -24,7 +24,6 @@ namespace Restaurant.API.Controllers
             return CreatedEnvelope(result.Value, "Category created successfully");
         }
 
-        [AllowAnonymous]
         [HttpPut("{categoryId:guid}")]
         public async Task<IActionResult> UpdateCategory(Guid categoryId, [FromBody] UpdateCategoryRequest request, CancellationToken cancellationToken)
         {
@@ -32,7 +31,6 @@ namespace Restaurant.API.Controllers
             return result.Match<IActionResult>(r => OkEnvelope(r, "Category updated successfully"), Problem);
         }
 
-        [AllowAnonymous]
         [HttpDelete("{categoryId:guid}")]
         public async Task<IActionResult> DeleteCategory(Guid categoryId, CancellationToken cancellationToken)
         {
@@ -40,7 +38,6 @@ namespace Restaurant.API.Controllers
             return result.Match<IActionResult>(_ => OkEnvelope((object?)null, "Category deleted successfully"), Problem);
         }
 
-        [AllowAnonymous]
         [HttpPost("reorder")]
         public async Task<IActionResult> ReorderCategories([FromBody] IReadOnlyCollection<ReorderCategoryRequest> request, CancellationToken cancellationToken)
         {

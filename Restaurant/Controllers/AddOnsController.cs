@@ -13,12 +13,12 @@ using Restaurant.Application.Features.AddOns.Queries.GetFoodAddOns;
 namespace Restaurant.API.Controllers
 {
     [Route("api/addons")]
+    [Authorize]
     public sealed class AddOnsController(ISender sender) : ApiController
     {
         // ==========================================
         // CREATE
         // ==========================================
-        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> CreateAddOn(
             [FromForm] CreateAddOnRequest request,
@@ -41,7 +41,6 @@ namespace Restaurant.API.Controllers
         // ==========================================
         // READ
         // ==========================================
-        [AllowAnonymous]
         [HttpGet("{addOnId:guid}")]
         public async Task<IActionResult> GetAddOnById(
             Guid addOnId,
@@ -58,7 +57,6 @@ namespace Restaurant.API.Controllers
                 Problem);
         }
 
-        [AllowAnonymous]
         [HttpGet("~/api/foods/{foodId:guid}/addons")]
         public async Task<IActionResult> GetFoodAddOns(
             Guid foodId,
@@ -80,7 +78,6 @@ namespace Restaurant.API.Controllers
         // ==========================================
         // UPDATE (Partial Update)
         // ==========================================
-        [AllowAnonymous]
         [HttpPatch("{addOnId:guid}")]
         public async Task<IActionResult> UpdateAddOn(
             Guid addOnId,
@@ -101,7 +98,6 @@ namespace Restaurant.API.Controllers
         // ==========================================
         // DELETE
         // ==========================================
-        [AllowAnonymous]
         [HttpDelete("{addOnId:guid}")]
         public async Task<IActionResult> DeleteAddOn(
             Guid addOnId,

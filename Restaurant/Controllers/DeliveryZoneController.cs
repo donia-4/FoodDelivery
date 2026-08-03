@@ -13,9 +13,9 @@ using Restaurant.Application.Features.DeliveryZones.Queries.GetDeliveryZone;
 namespace Restaurant.API.Controllers
 {
     [Route("api/delivery-zones")]
+    [Authorize]
     public sealed class DeliveryZonesController(ISender sender) : ApiController
     {
-        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> CreateDeliveryZone(
             [FromForm] CreateDeliveryZoneRequest request,
@@ -29,7 +29,6 @@ namespace Restaurant.API.Controllers
             return CreatedEnvelope(result.Value, "Delivery zone created successfully");
         }
 
-        [AllowAnonymous]
         [HttpGet("{zoneId:guid}")]
         public async Task<IActionResult> GetDeliveryZone(
             Guid zoneId,
@@ -44,7 +43,6 @@ namespace Restaurant.API.Controllers
                 Problem);
         }
 
-        [AllowAnonymous]
         [HttpGet("~/api/branches/{branchId:guid}/delivery-zones")]
         public async Task<IActionResult> GetBranchDeliveryZones(
             Guid branchId,
@@ -66,7 +64,6 @@ namespace Restaurant.API.Controllers
                 Problem);
         }
 
-        [AllowAnonymous]
         [HttpPatch("{zoneId:guid}")]
         public async Task<IActionResult> UpdateDeliveryZone(
             Guid zoneId,
@@ -82,7 +79,6 @@ namespace Restaurant.API.Controllers
                 Problem);
         }
 
-        [AllowAnonymous]
         [HttpDelete("{zoneId:guid}")]
         public async Task<IActionResult> DeleteDeliveryZone(
             Guid zoneId,

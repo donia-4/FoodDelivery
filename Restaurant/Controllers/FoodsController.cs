@@ -19,13 +19,13 @@ using Restaurant.Domain.Results;
 namespace Restaurant.API.Controllers
 {
     [Route("api/foods")]
+    [Authorize]
     public sealed class FoodsController(ISender sender) : ApiController
     {
         private const long MaxFileSizeBytes = 5 * 1024 * 1024; // 5 MB
         private static readonly HashSet<string> AllowedExtensions =
             new(StringComparer.OrdinalIgnoreCase) { ".jpg", ".jpeg", ".png", ".jfif" };
 
-        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> CreateFood([FromForm] CreateFoodApiRequest request, CancellationToken cancellationToken)
         {
@@ -52,7 +52,6 @@ namespace Restaurant.API.Controllers
             return CreatedEnvelope(result.Value, "Food item created successfully");
         }
 
-        [AllowAnonymous]
         [HttpGet("{foodId:guid}")]
         public async Task<IActionResult> GetFoodById(Guid foodId, CancellationToken cancellationToken)
         {
@@ -60,7 +59,6 @@ namespace Restaurant.API.Controllers
             return result.Match<IActionResult>(r => OkEnvelope(r, "Food item retrieved successfully"), Problem);
         }
 
-        [AllowAnonymous]
         [HttpPut("{foodId:guid}")]
         public async Task<IActionResult> UpdateFood(Guid foodId, [FromForm] UpdateFoodApiRequest request, CancellationToken cancellationToken)
         {
@@ -87,7 +85,6 @@ namespace Restaurant.API.Controllers
             return result.Match<IActionResult>(r => OkEnvelope(r, "Food item updated successfully"), Problem);
         }
 
-        [AllowAnonymous]
         [HttpDelete("{foodId:guid}")]
         public async Task<IActionResult> DeleteFood(Guid foodId, CancellationToken cancellationToken)
         {
@@ -95,7 +92,6 @@ namespace Restaurant.API.Controllers
             return result.Match<IActionResult>(_ => OkEnvelope((object?)null, "Food item deleted successfully"), Problem);
         }
 
-        [AllowAnonymous]
         [HttpPatch("{foodId:guid}/hide")]
         public async Task<IActionResult> HideFood(Guid foodId, CancellationToken cancellationToken)
         {
@@ -103,7 +99,6 @@ namespace Restaurant.API.Controllers
             return result.Match<IActionResult>(_ => OkEnvelope((object?)null, "Food item hidden successfully"), Problem);
         }
 
-        [AllowAnonymous]
         [HttpPatch("{foodId:guid}/show")]
         public async Task<IActionResult> ShowFood(Guid foodId, CancellationToken cancellationToken)
         {
@@ -111,7 +106,6 @@ namespace Restaurant.API.Controllers
             return result.Match<IActionResult>(_ => OkEnvelope((object?)null, "Food item shown successfully"), Problem);
         }
 
-        [AllowAnonymous]
         [HttpPatch("{foodId:guid}/availability")]
         public async Task<IActionResult> ChangeAvailability(Guid foodId, [FromBody] bool isAvailable, CancellationToken cancellationToken)
         {
@@ -119,7 +113,6 @@ namespace Restaurant.API.Controllers
             return result.Match<IActionResult>(_ => OkEnvelope((object?)null, "Food availability changed successfully"), Problem);
         }
 
-        [AllowAnonymous]
         [HttpGet("search")]
         public async Task<IActionResult> SearchFoods([FromQuery] SearchFoodsRequest request, CancellationToken cancellationToken)
         {

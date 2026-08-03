@@ -12,9 +12,9 @@ using Restaurant.Application.Features.Branches.Queries.GetBranchById;
 namespace Restaurant.API.Controllers;
 
 [Route("api/branches")]
+[Authorize]
 public sealed class BranchesController(ISender sender) : ApiController
 {
-    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> CreateBranch(
         [FromBody] CreateBranchRequest request,
@@ -39,7 +39,6 @@ public sealed class BranchesController(ISender sender) : ApiController
     // ==========================================
     // READ
     // ==========================================
-    [AllowAnonymous]
     [HttpGet("{branchId:guid}")]
     public async Task<IActionResult> GetBranchById(
         Guid branchId,
@@ -59,7 +58,6 @@ public sealed class BranchesController(ISender sender) : ApiController
     // ==========================================
     // UPDATE
     // ==========================================
-    [AllowAnonymous]
     [HttpPut("{branchId:guid}")]
     public async Task<IActionResult> UpdateBranch(
         Guid branchId,
@@ -82,7 +80,6 @@ public sealed class BranchesController(ISender sender) : ApiController
     // ==========================================
     // DELETE
     // ==========================================
-    [AllowAnonymous]
     [HttpDelete("{branchId:guid}")]
     public async Task<IActionResult> DeleteBranch(
         Guid branchId,
@@ -100,7 +97,6 @@ public sealed class BranchesController(ISender sender) : ApiController
     // ACTIVATE / DEACTIVATE
     // ==========================================
 
-    [AllowAnonymous]
     [HttpPatch("{branchId:guid}/toggle-active")]
     public async Task<IActionResult> ToggleBranchActive(
     Guid branchId,

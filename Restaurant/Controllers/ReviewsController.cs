@@ -14,7 +14,7 @@ using Restaurant.Application.Features.Reviews.Queries.GetUserReviews;
 namespace Restaurant.API.Controllers;
 
 [Route("api/reviews")]
-[AllowAnonymous]
+[Authorize]
 public sealed class ReviewsController(ISender sender) : ApiController
 {
     // ==========================================
