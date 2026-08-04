@@ -88,12 +88,6 @@ public static class DependencyInjection
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 }
-                else
-                {
-                    builder.AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                }
             });
         });
 
