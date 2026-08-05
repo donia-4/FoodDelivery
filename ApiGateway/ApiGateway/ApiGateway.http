@@ -1,5 +1,0 @@
-@ApiGateway = https://localhost:7288
-
-###
-
-GET https://localhost:7288/api/restaurants?pageNumber=3&pageSize=10
