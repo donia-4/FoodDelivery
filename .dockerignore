@@ -1,0 +1,11 @@
+# .dockerignore contents
+# Ignore build outputs
+**/bin
+**/obj
+
+# Ignore IDE and source-control files
+**/.vs
+**/.git
+**/*.user
+**/*.suo
+
