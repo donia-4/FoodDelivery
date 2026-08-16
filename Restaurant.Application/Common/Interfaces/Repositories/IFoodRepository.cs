@@ -30,5 +30,6 @@ namespace Restaurant.Application.Common.Interfaces.Repositories
             int pageSize,
             CancellationToken cancellationToken = default);
         Task<bool> ExistsWithTheGivenName(string name, CancellationToken cancellationToken = default);
+        IQueryable<AddOn> GetAddOnsByFoodId(Guid foodId);
     }
 }

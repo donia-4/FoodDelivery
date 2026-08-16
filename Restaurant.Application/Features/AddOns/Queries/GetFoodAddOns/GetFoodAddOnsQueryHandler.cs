@@ -37,8 +37,8 @@ public sealed class GetFoodAddOnsQueryHandler(
             return FoodErrors.NotFound;
         }
 
-        var query = food.AddOns
-            .AsQueryable()
+        var query = foodRepository
+            .GetAddOnsByFoodId(request.FoodId)
             .Select(addOn => new GetFoodAddOnsResponse(
                 addOn.Id,
                 addOn.Name,

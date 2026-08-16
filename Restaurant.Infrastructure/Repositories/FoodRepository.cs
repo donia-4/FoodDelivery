@@ -41,6 +41,13 @@ public sealed class FoodRepository(RestaurantDbContext context)
                 cancellationToken);
     }
 
+    public IQueryable<AddOn> GetAddOnsByFoodId(Guid foodId)
+    {
+        return _context.AddOns
+            .AsNoTracking()
+            .Where(x => x.FoodId == foodId);
+    }
+
     public async Task<IReadOnlyList<Food>> GetByRestaurantIdAsync(
         Guid restaurantId,
         CancellationToken cancellationToken = default)
