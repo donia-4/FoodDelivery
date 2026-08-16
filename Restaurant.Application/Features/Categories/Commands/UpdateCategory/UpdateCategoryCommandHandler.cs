@@ -24,7 +24,7 @@ namespace Restaurant.Application.Features.Categories.Commands.UpdateCategory
             var category = await categoryRepository.GetByIdAsync(command.CategoryId, cancellationToken);
             if (category is null) return CategoryErrors.NotFound;
 
-            bool duplicateName = await categoryRepository.ExistsWithTheGivenName(category.Name.ToLower(), cancellationToken);
+            bool duplicateName = await categoryRepository.ExistsWithTheGivenName(command.Request.Name, cancellationToken);
             if (duplicateName) return CategoryErrors.DuplicateName;
 
             var result = category.Rename(command.Request.Name);

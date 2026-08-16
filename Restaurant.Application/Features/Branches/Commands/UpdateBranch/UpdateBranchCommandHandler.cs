@@ -37,9 +37,11 @@ public sealed class UpdateBranchCommandHandler(
             return BranchErrors.NotFound;
         }
 
-        bool duplicateName = await _branchRepository.ExistsWithTheGivenName(branch.Name.ToLower(), cancellationToken);
-
-        if (duplicateName) return BranchErrors.DuplicateName;
+        if (command.Request.Name != null)
+        {
+            bool duplicateName = await _branchRepository.ExistsWithTheGivenName(command.Request.Name, cancellationToken);
+            if (duplicateName) return BranchErrors.DuplicateName;
+        }
 
         var updateResult = branch.Update(
             request.Name,
