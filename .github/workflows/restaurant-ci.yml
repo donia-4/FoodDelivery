@@ -10,8 +10,8 @@ on:
       - dev
 
 jobs:
-  build-and-test:
-    name: Build and Test Restaurant
+  build-and-deploy:
+    name: Build, Test and Deploy Restaurant
     runs-on: windows-latest
 
     steps:
@@ -33,11 +33,9 @@ jobs:
         run: dotnet test Restaurant.sln --configuration Release --no-build --verbosity normal
 
       - name: Publish Restaurant API
-        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
-        run: dotnet publish Restaurant.API/Restaurant.API.csproj --configuration Release --output ./publish --runtime win-x86
+        run: dotnet publish Restaurant/Restaurant.API.csproj --configuration Release --output ./publish --runtime win-x86
 
       - name: Deploy to MonsterASP.NET via WebDeploy
-        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
         uses: rasmusbuchholdt/simply-web-deploy@2.1.0
         with:
           website-name: ${{ secrets.WEBSITE_NAME }}
