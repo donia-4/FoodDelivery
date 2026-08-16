@@ -1,9 +1,10 @@
-name: Restaurant CI
+name: Restaurant CI/CD
 
 on:
   push:
     branches:
       - dev
+
   pull_request:
     branches:
       - dev
@@ -11,7 +12,7 @@ on:
 jobs:
   build-and-test:
     name: Build and Test Restaurant
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -30,3 +31,16 @@ jobs:
 
       - name: Run tests
         run: dotnet test Restaurant.sln --configuration Release --no-build --verbosity normal
+
+      - name: Publish Restaurant API
+        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        run: dotnet publish Restaurant.API/Restaurant.API.csproj --configuration Release --output ./publish --runtime win-x86
+
+      - name: Deploy to MonsterASP.NET via WebDeploy
+        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        uses: rasmusbuchholdt/simply-web-deploy@2.1.0
+        with:
+          website-name: ${{ secrets.WEBSITE_NAME }}
+          server-computer-name: ${{ secrets.SERVER_COMPUTER_NAME }}
+          server-username: ${{ secrets.SERVER_USERNAME }}
+          server-password: ${{ secrets.SERVER_PASSWORD }}
