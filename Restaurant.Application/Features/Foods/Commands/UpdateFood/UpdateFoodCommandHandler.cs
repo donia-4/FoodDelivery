@@ -40,12 +40,15 @@ public sealed class UpdateFoodCommandHandler(
             return FoodErrors.NotFound;
         }
 
-        bool duplicateName = await _foodRepository.ExistsWithTheGivenName(
+        if(command.Request.Name != null)
+        {
+            bool duplicateName = await _foodRepository.ExistsWithTheGivenName(
             request.Name?.ToLower() ?? food.Name.ToLower(),
             cancellationToken);
 
-        if (duplicateName && request.Name != food.Name)
-            return FoodErrors.DuplicateName;
+            if (duplicateName && request.Name != food.Name)
+                return FoodErrors.DuplicateName;
+        }
 
         // ─── Step 1: Upload new image first (safest order) ───
         UploadFileResponse? newImage = null;

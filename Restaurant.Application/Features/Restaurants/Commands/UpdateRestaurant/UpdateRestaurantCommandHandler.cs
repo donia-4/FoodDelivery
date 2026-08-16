@@ -7,6 +7,7 @@ using Restaurant.Application.Features.Restaurants.Commands.UpdateRestaurant;
 using Restaurant.Application.Features.Restaurants.Dtos.UpdateRestaurant;
 using Restaurant.Domain.Restaurants;
 using Restaurant.Domain.Results;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Restaurant.Application.Features.Restaurants.UpdateRestaurant;
 
@@ -45,12 +46,15 @@ public sealed class UpdateRestaurantCommandHandler(
             return RestaurantErrors.NotFound;
         }
 
-        bool duplicateName = await _restaurantRepository.ExistsWithTheGivenName(
-            request.Name?.ToLower() ?? restaurant.Name.ToLower(),
-            cancellationToken);
+        if (request.Name != null)
+        {
+            bool duplicateName = await _restaurantRepository.ExistsWithTheGivenName(
+                request.Name?.ToLower() ?? restaurant.Name.ToLower(),
+                cancellationToken);
 
-        if (duplicateName && request.Name != restaurant.Name)
-            return RestaurantErrors.DuplicateName;
+            if (duplicateName && request.Name != restaurant.Name)
+                return RestaurantErrors.DuplicateName;
+        }
 
         // ─── Step 1: Upload new images first (safest order) ───
         UploadFileResponse? newLogo = null;
